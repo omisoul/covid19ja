@@ -1,0 +1,147 @@
+$navy-blue : #364f6b;
+$brighter-navy-blue: #3e5b7b;
+$darker-navy-blue: #304863;
+$light-blue : #43dde6;
+$pink : #fc5185;
+$off-white: #f0f0f0;
+$green: rgb(58, 219, 53);
+$red: #E91E63;
+$orange: #F44336;
+
+body{
+    background-color: $off-white;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.bg-blue{
+    background-color: $brighter-navy-blue !important;
+    box-shadow: 1px 2px 2px 2px rgba(0,0,0,0.2);
+}
+.link{
+    color: #fff;
+    margin: 0 20px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 700;
+}
+.link:hover{
+    color: $pink !important;
+}
+
+.body-con{
+    margin-top: 60px;
+    padding: 0 60px 
+}
+h1,h2,h3,h4,h5,h6{
+    font-weight: 700;
+}
+p{
+    margin-bottom: 0;
+}
+.info{
+    font-size: 12px;
+    color: #777;
+    margin: -20px 0 40px 0;
+}
+.can-container{
+    width: 100%;
+    height: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    color: black;
+    margin: 20px 0;
+    background-color: #fff;
+    box-shadow: 1px 2px 2px 2px rgba(37, 30, 30, 0.2)
+}
+
+.count-con{
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+}
+
+.stats{
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+.world-stats{
+    font-size: 2.5rem;
+}
+.box{
+    background-color: #fff;
+    padding: 30px 5px 30px 5px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 2px 2px rgba(0,0,0,0.2);
+    
+}
+.title{
+    margin-top: 40px;
+}
+.caption{
+    text-align: center;
+}
+.red{
+    color: $pink;
+}
+.orange{
+    color: lightsalmon;
+}
+.green{
+    color: lightgreen;
+}
+.grid-con{
+    //display: grid;
+    //template-columns: auto;
+    //align-items: center;
+    //justify-content: center;
+}
+.world-con{
+    margin-top: 10px;
+    padding: 0 60px;
+    .stat-info{
+        margin: 10px;
+        font-size: 1.7rem;
+    }
+    p{
+        font-size: 1.5rem;
+    }
+    text-align: center;
+    .count-con{
+        margin: 0;
+    }
+    .info{
+        font-size: 12px;
+        margin: 0;
+    }
+}
+.main-img{
+    display: block;
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
+    height: 300px;
+}
+.world-form{
+    margin: 10px auto;
+    max-width: 700px;
+    width: 100%;
+}
+.btn-mar{
+    margin: 5px 5px;
+}
+.wbox{
+    padding: 10px 5px;
+}
+.world-stats{
+    font-size: 2rem;
+}
+.con-img{
+    width: 90%;
+    margin-top: 40px;
+}
+@media (max-width: 500px){
+    body{
+        text-align: center;
+    }
+}

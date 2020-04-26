@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block heading %}World Statistics{% endblock %}
+{% block body %}
+<div class="world-con">
+    <div class="grid-con">
+        <div class="grid-col">
+            <img src="{{ url_for('static', filename='res/world.svg') }}" alt="The world" class="main-img">
+        </div>
+        <div class="grid-col">
+            <h4 class="stat-info">Now Showing Statistics For:</h4>
+            <p>{{ select }}</p>
+            <form action="{{ url_for('world_statistics') }}" method="post" class="form-inline world-form justify-content-center">
+                <select name="country" id="" class="form-control btn-mar">
+                    <option value="{{ select }}">{{ select }}</option>
+                    <option value="The World">The World</option> 
+                    {% for country in countries %}
+                        <option value="{{ country }}"> {{ country }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary form-control btn-mar">Select</button>
+            </form>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-4 col-lg-4 count-con">
+                        <div class="col-sm-12 col-md-12 col-lg-12 box wbox">
+                            <h3>Total Cases</h3>
+                            <p class="stats orange world-stats">{{ con.conCases }}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-lg-4 count-con">
+                        <div class="col-sm-12 col-md-12 col-lg-12 box wbox">
+                            <h3>Deaths</h3>
+                        <p class="stats red world-stats">{{ con.conDeaths }}</p>
+                        </div>  
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-lg-4 count-con">
+                        <div class="col-sm-12 col-md-12 col-lg-12 box wbox">
+                            <h3>Recoveries</h3>
+                            <p class="stats green world-stats">{{ con.conRecoveries }}</p>
+                        </div>   
+                    </div>
+                </div>
+                <p class="info">This data changes rapidly and might not reflect some cases still being reported.</p>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block heading %}COVID-19 in Jamaica{% endblock %}
+{% block body %}
+        <div class="body-con">
+            <div class="container">
+                <h1>Covid19 in Jamaica Tracker</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 col-lg-4 count-con">
+                            <div class="col-sm-12 col-md-12 col-lg-12 box">
+                                <h3>Total Cases</h3>
+                                <p class="stats orange" id="count1"></p>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4 count-con">
+                            <div class="col-sm-12 col-md-12 col-lg-12 box">
+                                <h3>Deaths</h3>
+                            <p class="stats red" id="count2"></p>
+                            </div>  
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4 count-con">
+                            <div class="col-sm-12 col-md-12 col-lg-12 box">
+                                <h3>Recoveries</h3>
+                                <p class="stats green" id="count3">  </p>
+                            </div>    
+                        </div>
+                    </div>
+                    <p class="info">This data changes rapidly and might not reflect some cases still being reported.</p>
+                </div>
+                <div class="container can-container cen">
+                    <div id="activityChart"></div>
+                </div>
+            </div>
+            <div class="container cen">
+                <h2 class="title">Map of COVID-19 Cases per Parish</h2>
+                <p>On 10 March 2020, the Ministry of Health and Wellness 
+                    (MoHW) confirmed the first case in Jamaica, a female patient who arrived from the United Kingdom on 4 March. Since
+                then, this has been the number of cases reported from each parish.</p>
+                <div class="can-container">
+                    <iframe id="serviceFrameSend" src="{{ url_for('get_map') }}" width="100%" height="300px"  frameborder="0"></iframe>
+                    <p class="caption">Geographical Distribution of Cases</p>
+                </div>    
+            </div>
+        </div>
+    </div>
+
+    {% block javascript %}
+        <script>
+            let test = JSON.parse({{jsCountries|tojson}});
+            let dates = JSON.parse({{jsDates|tojson}});
+            let cases = JSON.parse({{jsCases|tojson}});
+            let deaths = JSON.parse({{jsDeaths|tojson}});
+            let recoveries = JSON.parse({{jsRecoveries|tojson}});
+            let jsCases = {{js.conCases}};
+            let jsDeaths = {{js.conDeaths}};
+            let jsRecoveries= {{js.conRecoveries}};
+        </script>
+        {% endblock %}
+{% endblock  %}
+
+   
