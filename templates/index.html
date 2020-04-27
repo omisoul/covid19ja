@@ -39,10 +39,21 @@
                 <div class="can-container">
                     <iframe id="serviceFrameSend" src="{{ url_for('get_map') }}" width="100%" height="300px"  frameborder="0"></iframe>
                     <p class="caption">Geographical Distribution of Cases</p>
-                </div>    
+                </div>
+                <p class="d-info">This data changes rapidly and might not reflect some cases still being reported.</p>
             </div>
         </div>
-    </div>
+        <div class="card">
+            <div class="inner">
+                <h6>About This Information</h6>
+                <p>Data comes from Wikipedia and World Meter, and cases are constantly updated from resources around the world. 
+                Daily situation reports are also available on the <a href="https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports" class="site-link" target="_blank">World Health Organization site</a></p>
+                <h6>Why do I get different data from different sources?</h6>
+                <p>There are various sources that are tracking and aggregating coronavirus data. They update at different times and may have different ways of gathering data.</p>
+                <h6>Differences in Data</h6>
+                <p>Not all the data on this site is automatically updated. I do however try to ensure that changes are made as quickly as possible.</p>
+            </div>
+        </div>
 
     {% block javascript %}
         <script>

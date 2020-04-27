@@ -12,8 +12,11 @@ body{
     background-color: $off-white;
     color: #000;
     font-family: 'Montserrat', sans-serif;
+    height: 100%;
 }
-
+.navbar-nav .nav-item.active>.nav-link{
+    background-color: rgba(0,0,0,0) !important;
+}
 .bg-blue{
     background-color: $brighter-navy-blue !important;
     box-shadow: 1px 2px 2px 2px rgba(0,0,0,0.2);
@@ -31,6 +34,7 @@ body{
 
 .body-con{
     margin-top: 60px;
+    margin-bottom: 40px;
     padding: 0 60px 
 }
 h1,h2,h3,h4,h5,h6{
@@ -59,8 +63,27 @@ p{
     text-align: center;
     margin: 20px 0;
     padding: 10px;
+    .red{
+        color: $pink;
+        background-color: rgba(0,0,0,0) !important;
+    }
+    .orange{
+        color: lightsalmon;
+        background-color: rgba(0,0,0,0) !important;
+    }
+    .green{
+        color: lightgreen;
+        background-color: rgba(0,0,0,0) !important;
+    }
 }
-
+.card{
+    width: 80%;
+    padding: 1em;
+    margin: 20px auto;
+    p{
+        margin-bottom: 10px;
+    }
+}
 .stats{
     font-size: 3.5rem;
     font-weight: 700;
@@ -81,23 +104,10 @@ p{
 .caption{
     text-align: center;
 }
-.red{
-    color: $pink;
-}
-.orange{
-    color: lightsalmon;
-}
-.green{
-    color: lightgreen;
-}
-.grid-con{
-    //display: grid;
-    //template-columns: auto;
-    //align-items: center;
-    //justify-content: center;
-}
+
 .world-con{
     margin-top: 10px;
+    margin-bottom: 40px;
     padding: 0 60px;
     .stat-info{
         margin: 10px;
@@ -110,10 +120,10 @@ p{
     .count-con{
         margin: 0;
     }
-    .info{
-        font-size: 12px;
-        margin: 0;
-    }
+}
+.d-info{
+    font-size: 12px !important;
+    margin: 0;
 }
 .main-img{
     display: block;
@@ -130,6 +140,11 @@ p{
 .btn-mar{
     margin: 5px 5px;
 }
+.btn-m{
+    margin: 5px 5px;
+    padding: 0 2.14rem;
+    font-size: 1rem;
+}
 .wbox{
     padding: 10px 5px;
 }
@@ -140,8 +155,39 @@ p{
     width: 90%;
     margin-top: 40px;
 }
+.bh{
+    display: grid;
+    height: 80vh;
+    align-items: center;
+}
+.footer-blue{
+    padding: 40px;
+    font-size: 18px;
+    text-align: center;
+    background-color: $navy-blue;
+    .icons{
+        font-size: 32px;
+        margin: 4px 8px;
+    }
+    .icons:hover{
+        color: $pink;
+    }
+    .site-link{
+        color: $pink;
+        font-weight: 700;
+    }
+}
 @media (max-width: 500px){
     body{
         text-align: center;
+    }
+    .body-con{
+        padding: 0;
+    }
+    .world-con{
+        padding: 0;
+    }
+    .card{
+        width: 90%;
     }
 }

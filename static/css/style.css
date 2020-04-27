@@ -2,6 +2,11 @@ body {
   background-color: #f0f0f0;
   color: #000;
   font-family: "Montserrat", sans-serif;
+  height: 100%;
+}
+
+.navbar-nav .nav-item.active > .nav-link {
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 
 .bg-blue {
@@ -23,6 +28,7 @@ body {
 
 .body-con {
   margin-top: 60px;
+  margin-bottom: 40px;
   padding: 0 60px;
 }
 
@@ -56,6 +62,27 @@ p {
   margin: 20px 0;
   padding: 10px;
 }
+.count-con .red {
+  color: #fc5185;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+.count-con .orange {
+  color: lightsalmon;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+.count-con .green {
+  color: lightgreen;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.card {
+  width: 80%;
+  padding: 1em;
+  margin: 20px auto;
+}
+.card p {
+  margin-bottom: 10px;
+}
 
 .stats {
   font-size: 3.5rem;
@@ -81,20 +108,9 @@ p {
   text-align: center;
 }
 
-.red {
-  color: #fc5185;
-}
-
-.orange {
-  color: lightsalmon;
-}
-
-.green {
-  color: lightgreen;
-}
-
 .world-con {
   margin-top: 10px;
+  margin-bottom: 40px;
   padding: 0 60px;
   text-align: center;
 }
@@ -108,8 +124,9 @@ p {
 .world-con .count-con {
   margin: 0;
 }
-.world-con .info {
-  font-size: 12px;
+
+.d-info {
+  font-size: 12px !important;
   margin: 0;
 }
 
@@ -131,6 +148,12 @@ p {
   margin: 5px 5px;
 }
 
+.btn-m {
+  margin: 5px 5px;
+  padding: 0 2.14rem;
+  font-size: 1rem;
+}
+
 .wbox {
   padding: 10px 5px;
 }
@@ -144,9 +167,45 @@ p {
   margin-top: 40px;
 }
 
+.bh {
+  display: grid;
+  height: 80vh;
+  align-items: center;
+}
+
+.footer-blue {
+  padding: 40px;
+  font-size: 18px;
+  text-align: center;
+  background-color: #364f6b;
+}
+.footer-blue .icons {
+  font-size: 32px;
+  margin: 4px 8px;
+}
+.footer-blue .icons:hover {
+  color: #fc5185;
+}
+.footer-blue .site-link {
+  color: #fc5185;
+  font-weight: 700;
+}
+
 @media (max-width: 500px) {
   body {
     text-align: center;
+  }
+
+  .body-con {
+    padding: 0;
+  }
+
+  .world-con {
+    padding: 0;
+  }
+
+  .card {
+    width: 90%;
   }
 }
 
