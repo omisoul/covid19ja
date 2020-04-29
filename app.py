@@ -16,10 +16,11 @@ jDeaths = []
 jRecoveries = []
 jDates = []
 worldStats = []
+
 parishData = {
-    'id':['Kingston & St. Andrew','St. Catherine','Clarendon','Manchester',
-    'St. Elizabeth','Westmoreland','Hanover','St. James','Trelawny','St. Ann','St. Mary','Portland','St. Thomas'],
-    'Cases':[59,173,27,12,5,2,0,8,1,8,1,7,1]
+    'id':['Kingston & St Andrew','St Catherine','Clarendon','Manchester',
+    'St Elizabeth','Westmoreland','Hanover','St James','Trelawny','St Ann','St Mary','Portland','St Thomas'],
+    'cases':[0,0,0,0,0,0,0,0,0,0,0,0,0]
 }
 class GraphData:
     def __init__(self,gDates,gCases,gDeaths,gRecoveries):
@@ -62,7 +63,22 @@ def updateWorld():
     numDeaths = numDeaths[0].text
     numRecov = numRecov[0].text
     worldStats = [numCases,numDeaths,numRecov]
+
+def updateMapData():
+    global parishData
+
+    d = requests.get("https://admin.jamcovid19.moh.gov.jm/public/api/statistics?type=1")
+    data = d.json()
+    pData = data['data']['parishes_wise_report']
+
+    for pD in pData:
+
+        if pD['parish'] in parishData['id']:
+            parishIndex = parishData['id'].index(pD['parish'])
+            parishData['cases'][parishIndex] = int(pD['total_cases'])
     
+        
+
 
 #Retrieves global data from wikipedia table
 def updateList():
@@ -146,11 +162,18 @@ def total(values):
             totalValue += int(value)
     return totalValue
 
-
+def fol_legend(choropleth:folium.Choropleth):
+    del_list = []
+    for child in choropleth._children:
+        if child.startswith('color_map'):
+            del_list.append(child)
+    for del_item in del_list:
+        choropleth._children.pop(del_item)
+    return choropleth
 def generateMap():
     #Generate parishes
     parishes = os.path.join('mapdata','jamaicapolygonmap.geojson')
-    
+    updateMapData()
     #Create Parish Dataframe
     parishDf = pd.DataFrame.from_dict(parishData)
     nil = gpd.read_file(parishes)
@@ -161,19 +184,25 @@ def generateMap():
     m = folium.Map(location=[18.169340,-77.336837],zoom_start=9)
 
     #folium.GeoJson(parishes,name='geojson').add_to(m)
-    folium.Choropleth(
+    
+    bins = list(parishDf['cases'].quantile([0, 0.4, 0.6, 0.8, 1]))
+    fol_legend(folium.Choropleth(
         geo_data=parishes,
         data=parishDf,
-        columns=['id','Cases'],
+        columns=['id','cases'],
         key_on='feature.id',
         fill_color='YlOrRd',
         fill_opacity = 0.7,
         line_opacity = 0.2,
         control= False,
-        legend_name='COVID-19 Cases Per Parish'
-    ).add_to(m)
+        legend_name='COVID-19 Cases Per Parish',
+        bins=bins,
+        reset=True
+    )).add_to(m)
     folium.LayerControl().add_to(m)
-    
+    for key in m._children:
+        if key.startswith('color_map'):
+            del(m._children[key])
     style_func = lambda x: {'fillColor': '#ffffff', 
                             'color':'#000000', 
                             'fillOpacity': 0.1, 
@@ -184,7 +213,7 @@ def generateMap():
                                 'weight': 0.1}
     cases_highlight = folium.features.GeoJson(nilpop,style_function=style_func,control=False,
                                     highlight_function = highlight_func, tooltip=folium.features.GeoJsonTooltip(
-                                        fields=['id','Cases'],
+                                        fields=['id','cases'],
                                         aliases=['Parish: ','Cases'],
                                         style=("background-color: white; color: #333333; font-family: arial; font-size: 12px; padding: 10px;") 
                                     ))
@@ -194,7 +223,7 @@ def generateMap():
     folium.LayerControl().add_to(m)
     map_path = 'maps/map.html'
     m.save('maps/map.html')
-    print('gensigh')
+
 
 
 app = Flask(__name__)
