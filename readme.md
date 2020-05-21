@@ -14,4 +14,4 @@ This project makes use of:
   - Folium
   - Beautiful Soup
 
-You can check out the project 
+You can check out the project here: https://covid19ja.herokuapp.com/
