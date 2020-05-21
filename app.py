@@ -6,6 +6,14 @@ import os
 from flask import Flask, render_template, request, json, send_from_directory
 from bs4 import BeautifulSoup as bs
 
+
+"""
+Initialization of the variables that will store the variable statistics
+
+-> countries,cases,deaths and recoveries refers to the world statistics - this data is collected from Wikipedia. 
+-> jCases,jDeaths,jRecoveries,jDates refers to data for Jamaica - this data is collected from worldometers.
+->worldStats - Overall statistics of COVID-19 in the world - This data is also collected from worldometers
+"""
 countries = []
 cases = []
 deaths = []
@@ -17,23 +25,31 @@ jRecoveries = []
 jDates = []
 worldStats = []
 
+# Parish Data - Store the information of active cases in each parish in Jamaica
 parishData = {
     'id':['Kingston & St Andrew','St Catherine','Clarendon','Manchester',
     'St Elizabeth','Westmoreland','Hanover','St James','Trelawny','St Ann','St Mary','Portland','St Thomas'],
     'cases':[0,0,0,0,0,0,0,0,0,0,0,0,0]
 }
+
+
+# GraphData - Used to store the data for the graph of Active Cases, Recoveries and Deaths in Jamaica 
 class GraphData:
     def __init__(self,gDates,gCases,gDeaths,gRecoveries):
         self.gDates = gDates
         self.gCases = gCases
         self.gDeaths = gDeaths
         self.gRecoveries = gRecoveries
+
+# CountryStats - Used to store the data for different countries. 
 class CountryStats:
     def __init__(self,conCases,conDeaths,conRecoveries):
         self.conCases = conCases
         self.conDeaths = conDeaths
         self.conRecoveries = conRecoveries
 
+# Specifically updates Jamaica's information in the countries dictionary (countriesDict)
+# It does this by scraping worldometers Jamaica page 
 def updateJa():
 
     url = "https://www.worldometers.info/coronavirus/country/jamaica/"
@@ -49,6 +65,7 @@ def updateJa():
     numRecov = numRecov[0].text.replace(",","")
     countriesDict['Jamaica'] = [int(numCases),int(numDeaths),int(numRecov)]
 
+# This updates the overall world statistics by scraping worldometer.
 def updateWorld():
     global worldStats
     url = "https://www.worldometers.info/coronavirus/"
@@ -64,11 +81,17 @@ def updateWorld():
     numRecov = numRecov[0].text
     worldStats = [numCases,numDeaths,numRecov]
 
+# This checks for the ajax request and takes the information and formats it in JSON
+def retrieveData():
+    d = requests.get("https://admin.jamcovid19.moh.gov.jm/public/api/statistics?type=1")
+    data = d.json()
+    return data
+
+# This uses the data that is returned by retrieveData and updates the parishData dictionary.
 def updateMapData():
     global parishData
 
-    d = requests.get("https://admin.jamcovid19.moh.gov.jm/public/api/statistics?type=1")
-    data = d.json()
+    data = retrieveData()
     pData = data['data']['parishes_wise_report']
 
     for pD in pData:
@@ -76,11 +99,15 @@ def updateMapData():
         if pD['parish'] in parishData['id']:
             parishIndex = parishData['id'].index(pD['parish'])
             parishData['cases'][parishIndex] = int(pD['total_cases'])
-    
-        
+
+# Unimplemented
+# Retrieves the age, gender and overall statistics of Jamaica COVID-19 patients 
+def getStats():
+    data = retrieveData()
+    stats = [data['age_wise_data'],data['gender_wise_data'],data['overall_statistics']]     
 
 
-#Retrieves global data from wikipedia table
+# Retrieves global data from wikipedia table and updates countriesDict
 def updateList():
     global countries,cases,deaths,recoveries
     countries = []
@@ -113,7 +140,8 @@ def updateList():
     for x in range(len(countries)):
         countriesDict.update({countries[x] : [cases[x],deaths[x],recoveries[x]]})
 
-#Retrieves data from Jamaican specific table.
+# Retrieves data from Jamaican specific table from Wikipedia.
+
 def updateGraphData():
     global jDates, jCases,jDeaths, jRecoveries
     jDates = []
@@ -134,6 +162,8 @@ def updateGraphData():
             for cell in cells:
                 divs = cell.find_all("div")
                 if len(divs) >= 3:
+                    # Adding no title to any tag that doesn't have a title
+                    # The title of each tag contains the information required 
                     case = divs[2].get('title','No title')
                     recovery = divs[1].get('title','No title')
                     death = divs[0].get('title','No title')
@@ -154,14 +184,9 @@ def updateGraphData():
                         jCases.append(case)
                         jDeaths.append('0')
                         jRecoveries.append('0')
-                
-def total(values):
-    totalValue = 0
-    for value in values:
-        if value != "—":
-            totalValue += int(value)
-    return totalValue
 
+
+# Used to remove the legend from the folium map.
 def fol_legend(choropleth:folium.Choropleth):
     del_list = []
     for child in choropleth._children:
@@ -170,21 +195,21 @@ def fol_legend(choropleth:folium.Choropleth):
     for del_item in del_list:
         choropleth._children.pop(del_item)
     return choropleth
+
+# Generates an interactive map with the number of cases per parish 
 def generateMap():
-    #Generate parishes
+    # Generate parishes
     parishes = os.path.join('mapdata','jamaicapolygonmap.geojson')
     updateMapData()
-    #Create Parish Dataframe
+    # Create Parish Dataframe
     parishDf = pd.DataFrame.from_dict(parishData)
     nil = gpd.read_file(parishes)
     nil=nil[['id','geometry']]
     nilpop=nil.merge(parishDf,on="id")
     nil.head()
-    #Create a map object
+    # Create a map object
     m = folium.Map(location=[18.169340,-77.336837],zoom_start=9)
-
-    #folium.GeoJson(parishes,name='geojson').add_to(m)
-    
+ 
     bins = list(parishDf['cases'].quantile([0, 0.4, 0.6, 0.8, 1]))
     fol_legend(folium.Choropleth(
         geo_data=parishes,
@@ -228,6 +253,7 @@ def generateMap():
 
 app = Flask(__name__)
 
+# Homepage Route 
 @app.route("/")
 def index():
     global cases,recoveries,deaths,jDates
@@ -238,30 +264,41 @@ def index():
     generateMap()
     countries.sort()
     
+    # Removes commas from the various lists
     cases = [case.replace(",","") for case in cases]
     deaths = [death.replace(",","") for death in deaths]
     recoveries = [recovery.replace(",","") for recovery in recoveries]
     recoveries = [recovery.replace(",","") for recovery in recoveries]
+
+    # Removes 2020- from the jDates list 
     jDates = [jDate.replace("2020-","") for jDate in jDates]
     intJCases = [int(x) for x in jCases]
     intJDeaths = [int(x) for x in jDeaths]
     intJRecoveries = [int(x) for x in jRecoveries]
+
     gd = GraphData(jDates,intJCases,intJDeaths,intJRecoveries)
     jsStats = countriesDict.get('Jamaica')
     js = CountryStats(jsStats[0],jsStats[1],jsStats[2])
+    
+    #Coverts the following to Javascrpit Readable data
     jsCountries = json.dumps(countries)
     jsDates = json.dumps(gd.gDates[1:])
     jsCases = json.dumps(gd.gCases)
     jsDeaths = json.dumps(gd.gDeaths)
     jsRecoveries = json.dumps(gd.gRecoveries)
+
+
     return render_template("index.html", js = js, 
                             countries = countries, jsCountries = jsCountries, 
                             jsDates =jsDates, jsCases = jsCases, jsDeaths = jsDeaths, jsRecoveries = jsRecoveries)
 
+# Used to display the interactive map
 @app.route('/get_map')
 def get_map():
     return send_from_directory('maps','map.html')
 
+
+# Shows the world statistics of COVID-19 cases.
 @app.route('/world_statistics', methods=['GET','POST'])
 def world_statistics():
     global cases,recoveries,deaths,worldStats
@@ -278,7 +315,7 @@ def world_statistics():
             repD.append(int(death))
         except:
             repD.append(0)
-    print(worldStats)
+
     recoveries = [recovery.replace(",","") for recovery in recoveries]
     recoveries = [recovery.replace("[^0-9]","0") for recovery in recoveries]
     for recovery in recoveries:
@@ -300,6 +337,3 @@ def world_statistics():
         return render_template("world.html",countries = countries,con=con, select = country)
     return render_template("world.html",countries = countries, con=con, select = 'The World')
 
-@app.route('/construction')
-def construction():
-    return render_template("construction.html")

@@ -1,4 +1,4 @@
-
+//Adds the counter functionality to the homepage.
 document.addEventListener("DOMContentLoaded", () => {
   function counter(id, start, end, duration) {
    let obj = document.getElementById(id),
@@ -19,7 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
   counter("count3", 0, jsRecoveries, 3000);
  });
 
- 
+
+//Adds the interactive chart on the homepage
 var options = {
     series: [{
         name: 'Active Cases',
